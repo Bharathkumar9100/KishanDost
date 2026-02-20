@@ -123,6 +123,8 @@ export default function App() {
     }
   };
 
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
+
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -133,6 +135,7 @@ export default function App() {
       setCapturedImage(base64);
       setIsAnalyzing(true);
       setScanResult(null);
+      setAnalysisError(null);
 
       try {
         const result = await analyzePlant(base64, language);
@@ -153,8 +156,9 @@ export default function App() {
             ]);
           if (error) console.error("Failed to save scan", error);
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Analysis failed", err);
+        setAnalysisError(err.message || "Analysis failed. Please try again.");
       } finally {
         setIsAnalyzing(false);
       }
@@ -358,6 +362,21 @@ export default function App() {
                       </div>
                     )}
                   </div>
+
+                  {analysisError && (
+                    <div className="bg-red-50 border border-red-100 p-4 rounded-2xl flex items-start gap-3">
+                      <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                      <div className="space-y-2">
+                        <p className="text-sm text-red-700 font-medium">{analysisError}</p>
+                        <button 
+                          onClick={() => { setCapturedImage(null); setAnalysisError(null); }}
+                          className="text-xs font-bold text-red-600 underline"
+                        >
+                          Try Again
+                        </button>
+                      </div>
+                    </div>
+                  )}
 
                   {scanResult && (
                     <motion.div

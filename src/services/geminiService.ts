@@ -1,9 +1,16 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Language, ScanResult } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+const getAI = () => {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY is missing. Please set it in your environment variables.");
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
 export async function analyzePlant(imageBase64: string, language: Language): Promise<ScanResult> {
+  const ai = getAI();
   const langMap: Record<Language, string> = {
     en: "English",
     hi: "Hindi",
