@@ -1,0 +1,5 @@
+{
+  "name": "KisanDost: AI Plant Doctor",
+  "description": "A farmer-friendly AI assistant for plant disease detection and agricultural advice in multiple languages.",
+  "requestFramePermissions": ["camera"]
+}
